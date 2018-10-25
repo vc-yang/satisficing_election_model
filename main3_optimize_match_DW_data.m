@@ -1,28 +1,24 @@
-% plot trajectory with DW-NOMINATE data
+% plot model trajectory on top with DW-NOMINATE data
 % running 2 party max vote model 
+% code written in MATLAB 2016a
 
 clear all; clc; 
-optimize = 0;
+optimize = 0; # whether to run optimization for parameters or not. If 0, then run model with initial parameters, knob0
 
 para = struct();
 
 % parameters to be optimized. knob = [sigma0, b, k]
-% knob0 = [1, 4, 5]; % initial guess
-% knob0 = [0.91, 3.64, 5.7]; %rough convergence, tolx = 0.05; 
-% knob0 = [0.91, 3.63, 2.7]; % finer convergernce , tolx = 0.01
-% knob0 = [0.93, 3.73, 2.4]; % even finder convergence, 'TolFun', 0.001 ,'TolX', 0.005
-% best fitting found:     0.9325    3.7333    2.5471
-%knob0 = [   0.9325    3.7333    2.5471];
-knob0 = [   0.9325    3.7333    250];
+knob0 = [   0.9325    3.7333    2.5471];
 
+% scaling of parameters for optimization routine. Real parameters = knob*scaling
 para.scaling = [1, 1, 1]; 
 
-% numeric variables
+% numerical parameters
 para.timeGap = 2; % years between every sigma update
 para.tres = 10; % number of time steps between each update
 
 %% Load data
-load('../../Data/DWnominate/House and Senate Joint/dataHouseSenate_final2.mat')
+load('dataHouseSenate_final2.mat')
 data = struct();
 data.Dmu = Ddata(:,1);
 data.Rmu = Rdata(:,1);
@@ -30,7 +26,7 @@ data.Dsig = Ddata(:,2);
 data.Rsig = Rdata(:,2);
 data.year = year; 
 
-% a list year variable for plotting data
+% a list year variables for plotting data
 yr_list = linspace(min(data.year), max(data.year), length(data.year)*para.tres);
 
 %% optimize parameters 
@@ -65,7 +61,6 @@ save('theory.mat', 'theory')
 
 %% Plot with DW data
 plot_DW_data_with_theory( data, mu_full, yr_list )
-%plot(yr_list, mu_full)
 
 
 %%  Plot distance to party 
@@ -79,6 +74,7 @@ f2 = polyfit(meanSig,dmuTheo, 1);
 
 xplt = linspace(0.08, 0.2, 50);
 
+
 figure()
 plot(meanSig, dmuData, 'ko')
 hold on
@@ -91,10 +87,4 @@ plot(xplt, xplt*f2(1)+f2(2), 'r--')
 xlabel('mean party heterogeneity')
 ylabel('distance between parties')
 legend('data','data fit', 'theory' , 'theory fit')
-
-%% save data 
-theory = struct(); 
-theory.para = knob; 
-theory.xi = 
-
 
