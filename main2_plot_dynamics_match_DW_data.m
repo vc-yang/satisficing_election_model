@@ -18,7 +18,7 @@ para.timeGap = 2; % years between every sigma update
 para.tres = 10; % number of time steps between each update
 
 %% Load data
-load('../../Data/DWnominate/House and Senate Joint/dataHouseSenate_final2.mat')
+load('dataHouseSenate_final2.mat')
 data = struct();
 data.Dmu = Ddata(:,1);
 data.Rmu = Rdata(:,1);
@@ -29,10 +29,9 @@ data.year = year;
 % a list year variable for plotting data
 yr_list = linspace(min(data.year), max(data.year), length(data.year)*para.tres);
 
-% run the 2 party model with data
+% run the 2 party model and compare with data
 mu_full = run_2_party_with_DW_para(para, data);
 
 
 %% figure()
 plot_DW_data_with_theory( data, mu_full, yr_list )
-%plot(yr_list, mu_full)
